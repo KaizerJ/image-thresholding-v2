@@ -61,6 +61,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Umbralizar imagen v2");
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                formComponentResized(evt);
+            }
+        });
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -198,6 +203,25 @@ public class MainFrame extends javax.swing.JFrame {
         askBeforeExit();
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
+    //Al readjustar la ventana mueve las internalframes que se vayan a quedar fuera
+    private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
+        Dimension size = this.getSize();
+        JInternalFrame[] frames = this.desktopPane.getAllFrames();
+        
+        for (JInternalFrame frame : frames) {
+            Point loc = frame.getLocation();
+            if(loc.x > size.width - 50){
+                loc.x = size.width - 50;
+            }
+            
+            if(loc.y > size.height - 100){
+                loc.y = size.height - 100;
+            }
+            
+            frame.setLocation(loc);
+        }
+    }//GEN-LAST:event_formComponentResized
+
     /**
      * @param args the command line arguments
      */
@@ -311,7 +335,7 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     private void updateMinimunSize() {
-        JInternalFrame[] frames = this.desktopPane.getAllFrames();
+        /*JInternalFrame[] frames = this.desktopPane.getAllFrames();
         int maxX = 0;
         int maxY = 0;
         for (JInternalFrame frame : frames) {
@@ -326,6 +350,6 @@ public class MainFrame extends javax.swing.JFrame {
         }
         Point desktopPaneLoc = this.desktopPane.getLocation();
         this.setMinimumSize(new Dimension(maxX + desktopPaneLoc.x, maxY + desktopPaneLoc.y));
-        System.out.println("MaxX = " + (maxX+desktopPaneLoc.x) + " MaxY = " + (maxY+desktopPaneLoc.y));
+        System.out.println("MaxX = " + (maxX+desktopPaneLoc.x) + " MaxY = " + (maxY+desktopPaneLoc.y));*/
     }
 }
