@@ -1,12 +1,23 @@
 package com.mycompany.image.thresholding.v2;
 
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import javax.swing.JFileChooser;
+import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.highgui.HighGui;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 /**
@@ -17,6 +28,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private JFileChooser fc;
     private Mat originalImage;
+    private int layer;
     
     /**
      * Creates new form MainFrame
@@ -25,6 +37,7 @@ public class MainFrame extends javax.swing.JFrame {
         nu.pattern.OpenCV.loadShared();
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         
+        initFileChooser();
         initComponents();
     }
 
@@ -46,27 +59,42 @@ public class MainFrame extends javax.swing.JFrame {
         editMenuGroup = new javax.swing.JMenu();
         thresholdingMenuItem = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Umbralizar imagen v2");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         javax.swing.GroupLayout desktopPaneLayout = new javax.swing.GroupLayout(desktopPane);
         desktopPane.setLayout(desktopPaneLayout);
         desktopPaneLayout.setHorizontalGroup(
             desktopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 500, Short.MAX_VALUE)
         );
         desktopPaneLayout.setVerticalGroup(
             desktopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 279, Short.MAX_VALUE)
+            .addGap(0, 379, Short.MAX_VALUE)
         );
 
         fileMenuGroup.setText("Ficheros");
 
         openMenuItem.setText("Abrir imagen");
+        openMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openMenuItemActionPerformed(evt);
+            }
+        });
         fileMenuGroup.add(openMenuItem);
         fileMenuGroup.add(jSeparator1);
 
         exitMenuItem.setText("Salir");
+        exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitMenuItemActionPerformed(evt);
+            }
+        });
         fileMenuGroup.add(exitMenuItem);
 
         menuBar.add(fileMenuGroup);
@@ -108,20 +136,14 @@ public class MainFrame extends javax.swing.JFrame {
         if( res == null ) return;
         
         try{
-            Lienzo lienzo = new Lienzo();
             int umbral = Integer.parseInt(res);
             if(this.originalImage != null ){
                 Mat processedImage = umbralizar(originalImage, umbral);
-                lienzo.setImage((BufferedImage) HighGui.toBufferedImage(processedImage)); 
+                ImageWindow iw = createImageWindow(
+                        (BufferedImage) HighGui.toBufferedImage(processedImage)); 
+                iw.setTitle("Umbral = " + umbral);
+                iw.setLayer(++layer);
             }
-            
-            ImageWindow imageWindow = new ImageWindow();
-            imageWindow.add(lienzo);
-            
-            this.desktopPane.add(imageWindow);
-            imageWindow.setVisible(true);
-            
-            lienzo.setVisible(true);
             
         } catch(NumberFormatException e){
             JOptionPane.showMessageDialog(this, 
@@ -130,6 +152,51 @@ public class MainFrame extends javax.swing.JFrame {
                                      JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_thresholdingMenuItemActionPerformed
+
+    private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
+        int result = fc.showOpenDialog(this);
+        
+        if( result == JFileChooser.APPROVE_OPTION ){
+            File file = fc.getSelectedFile();
+            try{
+                String path = Files.probeContentType(file.toPath());
+                if (path == null || !path.startsWith("image/")){
+                    JOptionPane.showMessageDialog(this, 
+                                         "El archivo seleccionado no es una imagen válida", 
+                                         "Archivo no válido", 
+                                         JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                closeAllInternalFrames();
+                this.layer = 0;
+                this.originalImage = Imgcodecs.imread(
+                        fc.getSelectedFile().getAbsolutePath());
+                
+                
+                ImageWindow iw = createImageWindow(
+                        (BufferedImage) HighGui.toBufferedImage(originalImage));
+                iw.setTitle(file.getName());
+                iw.setLayer(layer);
+
+                this.thresholdingMenuItem.setEnabled(true);
+            }catch(IOException e){
+                JOptionPane.showMessageDialog(this, 
+                                         "Se produjo un error al intentar abrir el fichero", 
+                                         "Error de lectura del fichero", 
+                                         JOptionPane.ERROR_MESSAGE);
+            }
+            
+        }
+    }//GEN-LAST:event_openMenuItemActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        askBeforeExit();
+    }//GEN-LAST:event_formWindowClosing
+
+    private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
+        askBeforeExit();
+    }//GEN-LAST:event_exitMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -190,5 +257,75 @@ public class MainFrame extends javax.swing.JFrame {
         Imgproc.threshold(imagenGris, imagenUmbralizada, umbral, 255, Imgproc.THRESH_BINARY);
         // se devuelve la imagen umbralizada
         return imagenUmbralizada;
+    }
+    
+    private void initFileChooser() {
+        FileFilter imgs = new FileNameExtensionFilter(
+                "Imagénes (JPEG, PNG, BMP y TIFF)", "jpg", "jpeg", "png", "bmp",
+                "dib", "tiff", "tif");
+        
+        this.fc = new JFileChooser();
+        
+        this.fc.addChoosableFileFilter(imgs);
+    }
+
+    private void closeAllInternalFrames() {
+        JInternalFrame[] frames = this.desktopPane.getAllFrames();
+        
+        for (JInternalFrame frame : frames) {
+            frame.dispose();
+        }
+    }
+
+    private ImageWindow createImageWindow(BufferedImage bufferedImage) {
+        ImageWindow imageWindow = new ImageWindow();
+        this.desktopPane.add(imageWindow);
+        imageWindow.setImage(bufferedImage);
+        
+        imageWindow.addComponentListener(new ComponentListener(){
+            @Override
+            public void componentResized(ComponentEvent e) {}
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+                MainFrame.this.updateMinimunSize();
+            }
+
+            @Override
+            public void componentShown(ComponentEvent e) {}
+
+            @Override
+            public void componentHidden(ComponentEvent e) {}
+        });
+        
+        return imageWindow;
+    }
+
+    private void askBeforeExit() {
+        int res = JOptionPane.showConfirmDialog(this, "¿Desea salir?", "Salir", 
+                                                JOptionPane.YES_NO_OPTION);
+        
+        if( res == JOptionPane.YES_OPTION ){
+            System.exit(0);
+        }
+    }
+
+    private void updateMinimunSize() {
+        JInternalFrame[] frames = this.desktopPane.getAllFrames();
+        int maxX = 0;
+        int maxY = 0;
+        for (JInternalFrame frame : frames) {
+            Point frameLoc = frame.getLocation();
+            if(frameLoc.x > maxX){
+                maxX = frameLoc.x;
+            }
+            
+            if(frameLoc.y > maxY){
+                maxY = frameLoc.y;
+            }
+        }
+        Point desktopPaneLoc = this.desktopPane.getLocation();
+        this.setMinimumSize(new Dimension(maxX + desktopPaneLoc.x, maxY + desktopPaneLoc.y));
+        System.out.println("MaxX = " + (maxX+desktopPaneLoc.x) + " MaxY = " + (maxY+desktopPaneLoc.y));
     }
 }

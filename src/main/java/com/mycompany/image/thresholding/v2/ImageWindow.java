@@ -1,6 +1,7 @@
 package com.mycompany.image.thresholding.v2;
 
 import java.awt.Dimension;
+import java.awt.image.BufferedImage;
 
 public class ImageWindow extends javax.swing.JInternalFrame {
 
@@ -9,6 +10,13 @@ public class ImageWindow extends javax.swing.JInternalFrame {
      */
     public ImageWindow() {
         initComponents();
+       
+        this.setResizable(true);
+        this.setMaximizable(true);
+        this.setIconifiable(true);
+        this.setClosable(true);
+        this.setVisible(true);
+        this.moveToFront();
     }
 
     /**
@@ -20,21 +28,44 @@ public class ImageWindow extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        lienzoScrollPane = new javax.swing.JScrollPane();
+        lienzo = new com.mycompany.image.thresholding.v2.Lienzo();
+
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
+        javax.swing.GroupLayout lienzoLayout = new javax.swing.GroupLayout(lienzo);
+        lienzo.setLayout(lienzoLayout);
+        lienzoLayout.setHorizontalGroup(
+            lienzoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 394, Short.MAX_VALUE)
+        );
+        lienzoLayout.setVerticalGroup(
+            lienzoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 282, Short.MAX_VALUE)
+        );
+
+        lienzoScrollPane.setViewportView(lienzo);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 394, Short.MAX_VALUE)
+            .addComponent(lienzoScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 278, Short.MAX_VALUE)
+            .addComponent(lienzoScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public void setImage(BufferedImage image){
+        this.lienzo.setImage(image);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.mycompany.image.thresholding.v2.Lienzo lienzo;
+    private javax.swing.JScrollPane lienzoScrollPane;
     // End of variables declaration//GEN-END:variables
 }

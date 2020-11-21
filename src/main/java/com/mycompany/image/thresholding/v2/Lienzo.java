@@ -25,7 +25,7 @@ public class Lienzo extends JPanel{
         } else {
             g.setColor(Color.GRAY);
             g.setFont(new Font( "SansSerif", Font.PLAIN, 20 ));
-            g.drawString("Abre una imagen en Ficheros > Abrir", 0, 0);
+            g.drawString("Abre una imagen en Ficheros > Abrir", 20, 20);
         }
     }
     
