@@ -51,6 +51,8 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         desktopPane = new javax.swing.JDesktopPane();
+        samuelLabel = new javax.swing.JLabel();
+        jonayLabel = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         fileMenuGroup = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
@@ -72,19 +74,39 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        samuelLabel.setForeground(new java.awt.Color(255, 255, 255));
+        samuelLabel.setText("Samuel Trujillo Santana");
+
+        jonayLabel.setForeground(new java.awt.Color(255, 255, 255));
+        jonayLabel.setText("Jonay Suárez Ramírez");
+
+        desktopPane.setLayer(samuelLabel, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        desktopPane.setLayer(jonayLabel, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
         javax.swing.GroupLayout desktopPaneLayout = new javax.swing.GroupLayout(desktopPane);
         desktopPane.setLayout(desktopPaneLayout);
         desktopPaneLayout.setHorizontalGroup(
             desktopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 500, Short.MAX_VALUE)
+            .addGroup(desktopPaneLayout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addGroup(desktopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jonayLabel)
+                    .addComponent(samuelLabel))
+                .addContainerGap(365, Short.MAX_VALUE))
         );
         desktopPaneLayout.setVerticalGroup(
             desktopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 379, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, desktopPaneLayout.createSequentialGroup()
+                .addContainerGap(323, Short.MAX_VALUE)
+                .addComponent(samuelLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jonayLabel)
+                .addGap(22, 22, 22))
         );
 
         fileMenuGroup.setText("Ficheros");
 
+        openMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         openMenuItem.setText("Abrir imagen");
         openMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -94,6 +116,7 @@ public class MainFrame extends javax.swing.JFrame {
         fileMenuGroup.add(openMenuItem);
         fileMenuGroup.add(jSeparator1);
 
+        exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         exitMenuItem.setText("Salir");
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -106,6 +129,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         editMenuGroup.setText("Editar");
 
+        thresholdingMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         thresholdingMenuItem.setText("Umbralizar");
         thresholdingMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -271,8 +295,10 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenuGroup;
     private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JLabel jonayLabel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
+    private javax.swing.JLabel samuelLabel;
     private javax.swing.JMenuItem thresholdingMenuItem;
     // End of variables declaration//GEN-END:variables
    
