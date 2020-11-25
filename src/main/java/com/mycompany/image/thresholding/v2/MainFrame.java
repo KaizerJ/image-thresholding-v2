@@ -131,6 +131,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         thresholdingMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         thresholdingMenuItem.setText("Umbralizar");
+        thresholdingMenuItem.setEnabled(false);
         thresholdingMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 thresholdingMenuItemActionPerformed(evt);
@@ -166,7 +167,7 @@ public class MainFrame extends javax.swing.JFrame {
         
         try{
             int umbral = Integer.parseInt(res);
-            if(umbral > 255){
+            if(umbral > 255 || umbral < 0){
                 JOptionPane.showMessageDialog(this, 
                                      "Introduce un número entero entre 0 y 255", 
                                      "Umbral no válido", 
