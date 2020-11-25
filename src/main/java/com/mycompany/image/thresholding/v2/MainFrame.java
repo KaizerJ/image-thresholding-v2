@@ -142,12 +142,20 @@ public class MainFrame extends javax.swing.JFrame {
         
         try{
             int umbral = Integer.parseInt(res);
+            if(umbral > 255){
+                JOptionPane.showMessageDialog(this, 
+                                     "Introduce un número entero entre 0 y 255", 
+                                     "Umbral no válido", 
+                                     JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
             if(this.originalImage != null ){
                 Mat processedImage = umbralizar(originalImage, umbral);
                 ImageWindow iw = createImageWindow(
                         (BufferedImage) HighGui.toBufferedImage(processedImage)); 
                 iw.setTitle("Umbral = " + umbral);
-                iw.setLayer(++layer);
+                //iw.setLayer(++layer);
             }
             
         } catch(NumberFormatException e){
@@ -303,8 +311,9 @@ public class MainFrame extends javax.swing.JFrame {
 
     private ImageWindow createImageWindow(BufferedImage bufferedImage) {
         ImageWindow imageWindow = new ImageWindow();
-        this.desktopPane.add(imageWindow);
+        desktopPane.add(imageWindow);
         imageWindow.setImage(bufferedImage);
+        imageWindow.setVisible(true);
         
         imageWindow.addComponentListener(new ComponentListener(){
             @Override
