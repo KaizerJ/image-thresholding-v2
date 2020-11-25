@@ -15,8 +15,6 @@ public class ImageWindow extends javax.swing.JInternalFrame {
         this.setMaximizable(true);
         this.setIconifiable(true);
         this.setClosable(true);
-        this.setVisible(true);
-        this.moveToFront();
     }
 
     /**
